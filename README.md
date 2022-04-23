@@ -5,7 +5,7 @@ This portfolio documents my professional journey and demonstrates my skills and 
 This is an organized electronic showcase of my talents and most relevant skills.
 
 ## Usage
-Use the link to the deployed <a href="" target ="_blank">Portfolio</a> on Heroku. 
+Use the link to the deployed <a href="https://portfolio-jamille.herokuapp.com/" target ="_blank">Portfolio</a> on Heroku. 
 
 ## Mockup: 
 
