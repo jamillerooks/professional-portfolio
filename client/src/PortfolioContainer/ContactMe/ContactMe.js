@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Typical from 'react-typical';
-import axios from 'axios';
+//import axios from 'axios';
+import emailjs from 'emailjs-com';
 import { toast } from 'react-toastify';
 import imgBack from '../../../src/images/mailz.jpeg';
 import load1 from '../../../src/images/load2.gif';
@@ -14,8 +15,10 @@ export default function ContactMe(props) {
 	let fadeInScreenHandler = (screen) => {
 		if (screen.fadeInScreen !== props.id) return;
 		Animations.animations.fadeInScreen(props.id);
+		
 	};
-
+	const form = useRef();
+	
 	const fadeInSubscription = ScrollService.currentScreenFadeIn.subscribe(
 		fadeInScreenHandler
 	);
@@ -36,34 +39,42 @@ export default function ContactMe(props) {
 		setMessage(e.target.value);
 	};
 	//console.log(name);
-	const submitForm = async (e) => {
+	const sendEmail = (e) => {
 		e.preventDefault();
-		try {
-			let data = {
-				name,
-				email,
-				message,
-			};
-			setBool(true);
-			const res = await axios.post(`/contact`, data);
-			if (name.length === 0 || email.length === 0 || message.length === 0) {
-				setBanner(res.data.msg);
-				toast.error(res.data.msg);
-				setBool(false);
-			} else if (res.status === 200) {
-				setBanner(res.data.msg);
-				toast.success(res.data.msg);
-				setBool(false);
+			// let data = {
+			// 	name,
+			// 	email,
+			// 	message,
+			// };
+			// setBool(true);
+			// const res = (data);
+			// if (name.length === 0 || email.length === 0 || message.length === 0) {
+			// 	setBanner(res.data.msg);
+			// 	toast.error(res.data.msg);
+			// 	setBool(false);
+			// } else if (res.status === 200) {
+			// 	setBanner(res.data.msg);
+			// 	toast.success(res.data.msg);
+			// 	setBool(false);
 
-				//Set form to default state - Clear contact form after submission
-				setName('');
-				setEmail('');
-				setMessage('');
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
+			// 	//Set form to default state - Clear contact form after submission
+			// 	// setName('');
+			// 	// setEmail('');
+			// 	// setMessage('');
+			// }
+	
+			emailjs.sendForm('service_igjcghe', 'template_zt9g5g4', e.target, 'e2SWg07_hlOAEOVDG')
+		  		.then((result) => {
+			  		console.log(result.text);
+					  	setName('');
+						setEmail('');
+						setMessage('');
+
+		  	}, (error) => {
+			  		console.log(error.text);
+		  });
+		  e.target.reset();
+	  };
 
 	return (
 		<div className="main-container fade-in" id={props.id || ''}>
@@ -91,16 +102,16 @@ export default function ContactMe(props) {
 						<h4>Send Your Email Here!</h4>
 						<img src={imgBack} alt="image not found" />
 					</div>
-					<form onSubmit={submitForm}>
+					<form ref = {form} onSubmit={sendEmail}>
 						<p>{banner}</p>
 						<label htmlFor="name">Name</label>
-						<input type="text" onChange={handleName} value={name} placeholder="Jane Doe" />
+						<input type="text" name='user_name' onChange={handleName} value={name} placeholder="Jane Doe" />
 
 						<label htmlFor="email">Email</label>
-						<input type="email" onChange={handleEmail} value={email} placeholder="Jane@gmail.com" />
+						<input type="email" name='user_email' onChange={handleEmail} value={email} placeholder="Jane@gmail.com" />
 
 						<label htmlFor="message">Message</label>
-						<textarea type="text" onChange={handleMessage} value={message} placeholder="Type your message here." />
+						<textarea type="text" name='message' onChange={handleMessage} value={message} placeholder="Type your message here." />
 
 						<div className="send-btn">
 							<button type="submit">
